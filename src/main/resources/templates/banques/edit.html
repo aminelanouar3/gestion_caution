@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+    <title>Modifier Banque</title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+
+    <h2 class="mb-4">Modifier Banque</h2>
+
+    <form th:action="@{/banques/update}" method="post" th:object="${banque}">
+
+        <input type="hidden" th:field="*{code}">
+
+        <div class="mb-3">
+            <label>Libellé</label>
+            <input type="text" class="form-control" th:field="*{libelle}" required>
+        </div>
+
+        <button class="btn btn-warning">Modifier</button>
+
+        <a class="btn btn-secondary" th:href="@{/banques}">
+            Annuler
+        </a>
+
+    </form>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+    <title>Fournisseurs</title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+
+    <h2 class="mb-4">Gestion des Fournisseurs</h2>
+
+    <a class="btn btn-primary mb-3" th:href="@{/fournisseurs/create}">
+        + Ajouter Fournisseur
+    </a>
+
+    <!-- SEARCH -->
+    <form class="mb-3" method="get" th:action="@{/fournisseurs}">
+        <div class="input-group">
+            <input type="number"
+                   class="form-control"
+                   name="code"
+                   placeholder="Search by code"
+                   th:value="${code}">
+            <button class="btn btn-primary">Search</button>
+        </div>
+    </form>
+
+    <!-- TABLE -->
+    <table class="table table-bordered table-hover bg-white shadow-sm">
+
+        <thead class="table-dark">
+        <tr>
+            <th>Code</th>
+            <th>Libellé</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="f : ${fournisseurs}">
+            <td th:text="${f.code}"></td>
+            <td th:text="${f.libelle}"></td>
+
+            <td>
+                <a class="btn btn-sm btn-warning"
+                   th:href="@{'/fournisseurs/edit/' + ${f.code}}">
+                    Modifier
+                </a>
+
+                <a class="btn btn-sm btn-danger"
+                   th:href="@{'/fournisseurs/delete/' + ${f.code}}"
+                   onclick="return confirm('Supprimer ce fournisseur ?')">
+                    Supprimer
+                </a>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+
+</div>
+
+</body>
+</html>

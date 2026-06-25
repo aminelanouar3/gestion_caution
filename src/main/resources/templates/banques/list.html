@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+    <title>Banques</title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+
+    <h2 class="mb-4">Gestion des Banques</h2>
+
+    <a class="btn btn-primary mb-3" th:href="@{/banques/create}">
+        + Ajouter Banque
+    </a>
+    <form class="mb-3" method="get" th:action="@{/banques}">
+
+        <div class="input-group">
+            <input type="number"
+                   class="form-control"
+                   name="code"
+                   placeholder="Search by code"
+                   th:value="${code}">
+
+            <button class="btn btn-primary">Search</button>
+        </div>
+
+    </form>
+    <table class="table table-bordered table-hover bg-white shadow-sm">
+        <thead class="table-dark">
+        <tr>
+            <th>Code</th>
+            <th>Libellé</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="b : ${banques}">
+            <td th:text="${b.code}"></td>
+            <td th:text="${b.libelle}"></td>
+
+            <td>
+                <a class="btn btn-sm btn-warning"
+                   th:href="@{'/banques/edit/' + ${b.code}}">
+                    Modifier
+                </a>
+
+                <a class="btn btn-sm btn-danger"
+                   th:href="@{'/banques/delete/' + ${b.code}}"
+                   onclick="return confirm('Supprimer cette banque ?')">
+                    Supprimer
+                </a>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+
+</div>
+
+</body>
+</html>

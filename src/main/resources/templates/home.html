@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 
@@ -40,37 +41,35 @@
 
             <div class="col-md-10">
 
-                <div class="row g-4 justify-content-center">
+                <div class="row justify-content-center g-4">
 
-                    <!-- USERS -->
-                    <div class="col-md-4">
+                    <!-- ADMIN ONLY -->
+                    <div class="col-md-4" sec:authorize="hasRole('ADMINISTRATEUR')">
                         <a th:href="@{/users}" class="dashboard-card bg-primary d-block">
-                            <div class="icon">👤</div>
-                            Utilisateurs
+                            <div class="icon"></div>
+                            Gestion Utilisateurs
                         </a>
                     </div>
 
-                    <!-- CAUTIONS -->
-                    <div class="col-md-4">
-                        <a th:href="@{/cautions}" class="dashboard-card bg-success d-block">
-                            <div class="icon">📄</div>
-                            Cautions
+                    <div class="col-md-4" sec:authorize="hasRole('ADMINISTRATEUR')">
+                        <a th:href="@{/banques}" class="dashboard-card bg-secondary d-block">
+                            <div class="icon"></div>
+                            Gestion Banques
                         </a>
                     </div>
 
-                    <!-- BANQUES -->
-                    <div class="col-md-4">
-                        <a th:href="@{/banques}" class="dashboard-card bg-warning d-block">
-                            <div class="icon">🏦</div>
-                            Banques
+                    <div class="col-md-4" sec:authorize="hasRole('ADMINISTRATEUR')">
+                        <a th:href="@{/fournisseurs}" class="dashboard-card bg-secondary d-block">
+                            <div class="icon"></div>
+                            Gestion Fournisseurs
                         </a>
                     </div>
 
-                    <!-- FOURNISSEURS -->
-                    <div class="col-md-4">
-                        <a th:href="@{/fournisseurs}" class="dashboard-card bg-dark d-block">
-                            <div class="icon">🚚</div>
-                            Fournisseurs
+                    <!-- ADMIN + GESTIONNAIRE -->
+                    <div class="col-md-4" sec:authorize="hasAnyRole('ADMINISTRATEUR','GESTIONNAIRE')">
+                        <a th:href="@{/gestion}" class="dashboard-card bg-success d-block">
+                            <div class="icon"></div>
+                            Gestion Cautions
                         </a>
                     </div>
 
