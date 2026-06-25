@@ -20,6 +20,9 @@
 
             <button class="btn btn-primary w-100">Login</button>
         </form>
+        <div th:if="${param.error}" class="alert alert-danger">
+            Identifiants incorrects ou compte désactivé.
+        </div>
     </div>
 
 </div>

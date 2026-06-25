@@ -25,6 +25,8 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/gestion/**").hasAnyRole("ADMIN", "GESTIONNAIRE")
+                        .requestMatchers("/users/**")
+                        .hasRole("ADMINISTRATEUR")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -32,7 +34,7 @@ public class SecurityConfig {
                         .usernameParameter("matricule")
                         .passwordParameter("password")
                         .defaultSuccessUrl("/home", true)
-                        .failureUrl("/login?error")
+                        .failureUrl("/login?error=true")
                         .permitAll()
                 )
                 .logout(logout -> logout

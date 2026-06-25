@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+    <title>Créer Utilisateur</title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+    <h2 class="mb-4">Créer Utilisateur</h2>
+
+    <form th:action="@{/users/create}" method="post" th:object="${user}">
+
+        <div class="mb-3">
+            <label>Nom</label>
+            <input type="text" class="form-control" th:field="*{nom}" required>
+        </div>
+
+        <div class="mb-3">
+            <label>Prénom</label>
+            <input type="text" class="form-control" th:field="*{prenom}" required>
+        </div>
+
+        <div class="mb-3">
+            <label>Password</label>
+            <input type="password" class="form-control" th:field="*{password}" required>
+        </div>
+        <div class="mb-3">
+            <label>Confirmer Password</label>
+            <input type="password" class="form-control" th:field="*{confirmPassword}" required>
+        </div>
+        <div class="mb-3">
+            <label>Rôle</label>
+            <select class="form-control" th:field="*{role}">
+                <option value="ADMINISTRATEUR">ADMINISTRATEUR</option>
+                <option value="GESTIONNAIRE">GESTIONNAIRE</option>
+                <option value="CONSULTATION">CONSULTATION</option>
+            </select>
+        </div>
+
+        <button class="btn btn-success">Créer</button>
+    </form>
+
+</div>
+
+</body>
+</html>

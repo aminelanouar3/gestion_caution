@@ -1,8 +1,10 @@
 package com.poste.gestion_caution.service;
 
+import com.poste.gestion_caution.entity.EtatUtilisateur;
 import com.poste.gestion_caution.entity.Utilisateur;
 import com.poste.gestion_caution.repository.UtilisateurRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
@@ -16,15 +18,23 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UtilisateurRepository repo;
 
     @Override
-    public UserDetails loadUserByUsername(String matricule) {
+    public UserDetails loadUserByUsername(String matricule) throws UsernameNotFoundException {
 
         Utilisateur user = repo.findByMatricule(Integer.parseInt(matricule))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
+        if (user.getEtat() == EtatUtilisateur.INACTIVE) {
+            throw new DisabledException("User is inactive");
+        }
+
         return new org.springframework.security.core.userdetails.User(
-                String.valueOf(user.getMatricule()),
+                user.getMatricule().toString(),
                 user.getPassword(),
-                List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole()))
+                user.getEtat() == EtatUtilisateur.ACTIVE,
+                true,
+                true,
+                true,
+                List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
         );
     }
 }

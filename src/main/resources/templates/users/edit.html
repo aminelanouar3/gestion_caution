@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+    <title>Modifier Utilisateur</title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+
+    <h2 class="mb-4">Modifier Utilisateur</h2>
+
+    <form th:action="@{'/users/edit/' + ${user.matricule}}" method="post" th:object="${user}">
+
+        <!-- matricule editable (as you requested) -->
+        <div class="mb-3">
+            <label>Matricule</label>
+            <input type="number" class="form-control" th:field="*{matricule}" readonly>
+        </div>
+
+        <div class="mb-3">
+            <label>Nom</label>
+            <input type="text" class="form-control" th:field="*{nom}">
+        </div>
+
+        <div class="mb-3">
+            <label>Prénom</label>
+            <input type="text" class="form-control" th:field="*{prenom}">
+        </div>
+
+        <div class="mb-3">
+            <label>État</label>
+            <select class="form-control" th:field="*{etat}">
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="INACTIVE">INACTIVE</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label>Rôle</label>
+            <select class="form-control" th:field="*{role}">
+                <option value="ADMINISTRATEUR">ADMINISTRATEUR</option>
+                <option value="GESTIONNAIRE">GESTIONNAIRE</option>
+                <option value="CONSULTATION">CONSULTATION</option>
+            </select>
+        </div>
+
+        <button class="btn btn-warning">Modifier</button>
+    </form>
+
+</div>
+
+</body>
+</html>

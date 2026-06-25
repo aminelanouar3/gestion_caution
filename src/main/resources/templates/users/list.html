@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+    <title>Gestion Utilisateurs</title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+
+    <h2 class="mb-4">Gestion des Utilisateurs</h2>
+    <div th:if="${createdUserId}" class="alert alert-success">
+        Utilisateur créé avec succès. Matricule: <span th:text="${createdUserId}"></span>
+    </div>
+    <!-- Actions -->
+    <div class="mb-3">
+        <a class="btn btn-primary" th:href="@{/users/create}">
+            Créer Utilisateur
+        </a>
+    </div>
+    <form class="mb-3" method="get" th:action="@{/users}">
+        <div class="input-group">
+            <input type="number"
+                   name="matricule"
+                   class="form-control"
+                   placeholder="Search by matricule">
+
+            <button class="btn btn-primary" type="submit">
+                Search
+            </button>
+
+            <a class="btn btn-secondary" th:href="@{/users}">
+                Reset
+            </a>
+        </div>
+    </form>
+    <!-- Table -->
+    <table class="table table-bordered table-hover bg-white shadow-sm">
+        <thead class="table-dark">
+        <tr>
+            <th>Matricule</th>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>État</th>
+            <th>Rôle</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="u : ${users}">
+            <td th:text="${u.matricule}"></td>
+            <td th:text="${u.nom}"></td>
+            <td th:text="${u.prenom}"></td>
+            <td th:text="${u.etat}"></td>
+            <td th:text="${u.role}"></td>
+
+            <td>
+                <a class="btn btn-sm btn-warning"
+                   th:href="@{'/users/edit/' + ${u.matricule}}">
+                    Modifier
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>
