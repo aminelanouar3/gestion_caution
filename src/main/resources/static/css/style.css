@@ -1,0 +1,22 @@
+/* Background */
+.app-body {
+    background: #f5f7fb;
+    font-family: Arial, sans-serif;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Buttons */
+.btn {
+    border-radius: 8px;
+}
+
+/* Navbar */
+.navbar {
+    padding: 12px 20px;
+}

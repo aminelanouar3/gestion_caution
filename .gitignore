@@ -1,0 +1,50 @@
+# ===== Maven =====
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# ===== Logs =====
+*.log
+
+# ===== OS =====
+.DS_Store
+
+# ===== IntelliJ IDEA =====
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# ===== Eclipse / STS =====
+.classpath
+.project
+.settings/
+.factorypath
+.springBeans
+.apt_generated
+.sts4-cache
+
+# ===== NetBeans =====
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# ===== VS Code =====
+.vscode/
+
+# ===== Environment / Secrets =====
+.env
+*.env
+
+# ===== Spring Boot =====
+application-local.properties
+application-dev.properties
+
+# ===== Security / uploads =====
+uploads/
