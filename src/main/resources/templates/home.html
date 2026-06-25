@@ -8,25 +8,49 @@
     <title>Home</title>
 
     <style>
-        .dashboard-card {
-            border: none;
-            border-radius: 15px;
-            transition: all 0.25s ease;
-            text-align: center;
-            padding: 30px;
-            color: white;
+        .welcome-box {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .title {
+            font-size: 20px;
             font-weight: 600;
+            color: #111827;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .quick-links {
+            margin-top: 20px;
+        }
+
+        .quick-links a {
+            display: block;
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            background: #f9fafb;
+            border-radius: 6px;
             text-decoration: none;
+            color: #111827;
+            border: 1px solid #e5e7eb;
         }
 
-        .dashboard-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        .quick-links a:hover {
+            background: #eef2ff;
         }
 
-        .icon {
-            font-size: 40px;
-            margin-bottom: 10px;
+        .badge-role {
+            font-size: 12px;
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 4px 8px;
+            border-radius: 6px;
         }
     </style>
 </head>
@@ -37,44 +61,47 @@
 
     <div class="container">
 
-        <div class="row justify-content-center align-items-center" style="min-height: 75vh;">
+        <div class="row justify-content-center" style="margin-top: 40px;">
 
-            <div class="col-md-10">
+            <div class="col-md-8">
 
-                <div class="row justify-content-center g-4">
+                <!-- 🟦 WELCOME BOX -->
+                <div class="welcome-box">
 
-                    <!-- ADMIN ONLY -->
-                    <div class="col-md-4" sec:authorize="hasRole('ADMINISTRATEUR')">
-                        <a th:href="@{/users}" class="dashboard-card bg-primary d-block">
-                            <div class="icon"></div>
-                            Gestion Utilisateurs
-                        </a>
+                    <div class="title">
+                        Bienvenue dans le système de gestion des cautions
                     </div>
 
-                    <div class="col-md-4" sec:authorize="hasRole('ADMINISTRATEUR')">
-                        <a th:href="@{/banques}" class="dashboard-card bg-secondary d-block">
-                            <div class="icon"></div>
-                            Gestion Banques
-                        </a>
+                    <div class="subtitle mt-1">
+                        Poste Tunisienne - Système interne de suivi des cautions bancaires
                     </div>
 
-                    <div class="col-md-4" sec:authorize="hasRole('ADMINISTRATEUR')">
-                        <a th:href="@{/fournisseurs}" class="dashboard-card bg-secondary d-block">
-                            Gestion Fournisseurs
-                        </a>
-                    </div>
-                    <div class="col-md-4" sec:authorize="hasRole('ADMINISTRATEUR')">
-                        <a th:href="@{/ordonnateurs}" class="dashboard-card bg-secondary d-block">
-                            Gestion Ordonnateurs
-                        </a>
+                    <div class="mt-2">
+                        Rôle :
+                        <span class="badge-role"
+                              th:text="${#authentication.authorities}">
+                        </span>
                     </div>
 
-                    <!-- ADMIN + GESTIONNAIRE -->
-                    <div class="col-md-4" sec:authorize="hasAnyRole('ADMINISTRATEUR','GESTIONNAIRE')">
-                        <a th:href="@{/gestion}" class="dashboard-card bg-success d-block">
-                            <div class="icon"></div>
-                            Gestion Cautions
+                    <!-- 🔗 QUICK ACCESS -->
+                    <div class="quick-links">
+
+                        <a th:href="@{/cautions}">
+                            🧾 Accéder aux Cautions
                         </a>
+
+                        <a th:href="@{/banques}">
+                            🏦 Accéder aux Banques
+                        </a>
+
+                        <a th:href="@{/fournisseurs}">
+                            👤 Accéder aux Fournisseurs
+                        </a>
+
+                        <a th:href="@{/ordonnateurs}">
+                            🏢 Accéder aux Ordonnateurs
+                        </a>
+
                     </div>
 
                 </div>

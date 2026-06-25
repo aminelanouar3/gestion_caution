@@ -3,6 +3,7 @@ package com.poste.gestion_caution.service;
 import com.poste.gestion_caution.entity.EtatUtilisateur;
 import com.poste.gestion_caution.entity.Utilisateur;
 import com.poste.gestion_caution.repository.UtilisateurRepository;
+import com.poste.gestion_caution.security.CustomUserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,14 +28,10 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new DisabledException("User is inactive");
         }
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getMatricule().toString(),
-                user.getPassword(),
-                user.getEtat() == EtatUtilisateur.ACTIVE,
-                true,
-                true,
-                true,
+        return new CustomUserPrincipal(
+                user,
                 List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
         );
     }
+
 }

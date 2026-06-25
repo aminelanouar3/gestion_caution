@@ -22,16 +22,44 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(auth -> auth
+
+                        // PUBLIC
                         .requestMatchers("/login", "/css/**", "/js/**").permitAll()
 
-                        .requestMatchers("/users/**", "/banques/**", "/fournisseurs/**", "/ordonnateurs/**")
+                        // =========================
+                        // CAUTIONS (MAIN MODULE)
+                        // =========================
+
+                        // LIST ONLY (CONSULTEUR + others)
+                        .requestMatchers("/cautions")
+                        .hasAnyRole("CONSULTEUR", "GESTIONNAIRE", "ADMINISTRATEUR")
+
+                        // ACTIONS (NO CONSULTEUR)
+                        .requestMatchers(
+                                "/cautions/new",
+                                "/cautions/create",
+                                "/cautions/edit/**",
+                                "/cautions/update",
+                                "/cautions/delete/**"
+                        )
+                        .hasAnyRole("GESTIONNAIRE", "ADMINISTRATEUR")
+
+                        // =========================
+                        // ADMIN MODULES ONLY
+                        // =========================
+                        .requestMatchers(
+                                "/users/**",
+                                "/banques/**",
+                                "/fournisseurs/**",
+                                "/ordonnateurs/**"
+                        )
                         .hasRole("ADMINISTRATEUR")
 
-                        .requestMatchers("/gestion/**")
-                        .hasAnyRole("ADMINISTRATEUR", "GESTIONNAIRE")
-
+                        // EVERYTHING ELSE
                         .anyRequest().authenticated()
                 )
+
+                // LOGIN CONFIG
                 .formLogin(form -> form
                         .loginPage("/login")
                         .usernameParameter("matricule")
@@ -40,13 +68,19 @@ public class SecurityConfig {
                         .failureUrl("/login?error=true")
                         .permitAll()
                 )
+
+                // LOGOUT CONFIG
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
                         .deleteCookies("JSESSIONID")
-                )                .userDetailsService(userDetailsService);
+                )
+
+                // USER DETAILS
+                .userDetailsService(userDetailsService);
+
         return http.build();
     }
 
