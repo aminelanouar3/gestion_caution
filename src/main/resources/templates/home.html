@@ -60,8 +60,12 @@
 
                     <div class="col-md-4" sec:authorize="hasRole('ADMINISTRATEUR')">
                         <a th:href="@{/fournisseurs}" class="dashboard-card bg-secondary d-block">
-                            <div class="icon"></div>
                             Gestion Fournisseurs
+                        </a>
+                    </div>
+                    <div class="col-md-4" sec:authorize="hasRole('ADMINISTRATEUR')">
+                        <a th:href="@{/ordonnateurs}" class="dashboard-card bg-secondary d-block">
+                            Gestion Ordonnateurs
                         </a>
                     </div>
 

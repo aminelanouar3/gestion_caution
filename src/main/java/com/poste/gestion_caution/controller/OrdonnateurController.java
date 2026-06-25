@@ -15,8 +15,16 @@ public class OrdonnateurController {
     private final OrdonnateurService service;
 
     @GetMapping
-    public String list(Model model) {
-        model.addAttribute("ordonnateurs", service.getAll());
+    public String list(@RequestParam(required = false) Integer code, Model model) {
+
+        if (code != null) {
+            model.addAttribute("ordonnateurs", service.findByCode(code));
+        } else {
+            model.addAttribute("ordonnateurs", service.getAll());
+        }
+
+        model.addAttribute("code", code);
+
         return "ordonnateurs/list";
     }
 
@@ -27,14 +35,30 @@ public class OrdonnateurController {
     }
 
     @PostMapping("/create")
-    public String save(@ModelAttribute Ordonnateur o) {
-        service.save(o);
+    public String save(@ModelAttribute Ordonnateur ordonnateur) {
+        service.save(ordonnateur);
         return "redirect:/ordonnateurs";
     }
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Integer id) {
         service.delete(id);
+        return "redirect:/ordonnateurs";
+    }
+
+    @GetMapping("/edit/{code}")
+    public String editForm(@PathVariable Integer code, Model model) {
+
+        model.addAttribute("ordonnateur", service.findById(code));
+
+        return "ordonnateurs/edit";
+    }
+
+    @PostMapping("/update")
+    public String update(@ModelAttribute Ordonnateur ordonnateur) {
+
+        service.save(ordonnateur);
+
         return "redirect:/ordonnateurs";
     }
 }

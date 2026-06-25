@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+    <title>Créer Ordonnateur</title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+
+    <h2 class="mb-4">Créer Ordonnateur</h2>
+
+    <form th:action="@{/ordonnateurs/create}"
+          method="post"
+          th:object="${ordonnateur}">
+
+        <!-- LIBELLE -->
+        <div class="mb-3">
+            <label>Libellé</label>
+            <input type="text"
+                   class="form-control"
+                   th:field="*{libelle}"
+                   required>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            Créer
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+</html>

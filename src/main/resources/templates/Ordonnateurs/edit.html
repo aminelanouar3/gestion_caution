@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+    <title>Modifier Ordonnateur</title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+
+    <h2 class="mb-4">Modifier Ordonnateur</h2>
+
+    <form th:action="@{/ordonnateurs/update}"
+          method="post"
+          th:object="${ordonnateur}">
+
+        <input type="hidden" th:field="*{code}">
+
+        <div class="mb-3">
+            <label>Libellé</label>
+            <input type="text"
+                   class="form-control"
+                   th:field="*{libelle}"
+                   required>
+        </div>
+
+        <button class="btn btn-warning">Modifier</button>
+
+        <a class="btn btn-secondary"
+           th:href="@{/ordonnateurs}">
+            Annuler
+        </a>
+
+    </form>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<head>
+    <title>Ordonnateurs</title>
+</head>
+
+<body>
+
+<div layout:fragment="content">
+
+    <h2 class="mb-4">Gestion des Ordonnateurs</h2>
+
+    <a class="btn btn-primary mb-3" th:href="@{/ordonnateurs/create}">
+        + Ajouter Ordonnateur
+    </a>
+
+    <!-- SEARCH -->
+    <form class="mb-3" method="get" th:action="@{/ordonnateurs}">
+        <div class="input-group">
+            <input type="number"
+                   class="form-control"
+                   name="code"
+                   placeholder="Search by code"
+                   th:value="${code}">
+            <button class="btn btn-primary">Search</button>
+        </div>
+    </form>
+
+    <!-- TABLE -->
+    <table class="table table-bordered table-hover bg-white shadow-sm">
+
+        <thead class="table-dark">
+        <tr>
+            <th>Code</th>
+            <th>Libellé</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="o : ${ordonnateurs}">
+            <td th:text="${o.code}"></td>
+            <td th:text="${o.libelle}"></td>
+
+            <td>
+                <a class="btn btn-sm btn-warning"
+                   th:href="@{'/ordonnateurs/edit/' + ${o.code}}">
+                    Modifier
+                </a>
+
+                <a class="btn btn-sm btn-danger"
+                   th:href="@{'/ordonnateurs/delete/' + ${o.code}}"
+                   onclick="return confirm('Supprimer cet ordonnateur ?')">
+                    Supprimer
+                </a>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+
+</div>
+
+</body>
+</html>
