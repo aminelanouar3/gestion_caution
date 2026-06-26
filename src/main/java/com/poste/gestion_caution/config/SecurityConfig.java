@@ -23,43 +23,46 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
 
-                        // PUBLIC
                         .requestMatchers("/login", "/css/**", "/js/**").permitAll()
 
                         // =========================
-                        // CAUTIONS (MAIN MODULE)
+                        // GESTION PAGE (WORKFLOW)
                         // =========================
-
-                        // LIST ONLY (CONSULTEUR + others)
-                        .requestMatchers("/cautions")
-                        .hasAnyRole("CONSULTEUR", "GESTIONNAIRE", "ADMINISTRATEUR")
-
-                        // ACTIONS (NO CONSULTEUR)
-                        .requestMatchers(
-                                "/cautions/new",
-                                "/cautions/create",
-                                "/cautions/edit/**",
-                                "/cautions/update",
-                                "/cautions/delete/**"
-                        )
+                        .requestMatchers("/cautions/gestion")
                         .hasAnyRole("GESTIONNAIRE", "ADMINISTRATEUR")
 
                         // =========================
-                        // ADMIN MODULES ONLY
+                        // CREATE CAUTION
                         // =========================
-                        .requestMatchers(
-                                "/users/**",
-                                "/banques/**",
-                                "/fournisseurs/**",
-                                "/ordonnateurs/**"
-                        )
+                        .requestMatchers("/cautions/new", "/cautions/save")
+                        .hasAnyRole("GESTIONNAIRE", "ADMINISTRATEUR")
+
+                        // =========================
+                        // CHANGE STATE
+                        // =========================
+                        .requestMatchers("/cautions/*/state")
+                        .hasAnyRole("GESTIONNAIRE", "ADMINISTRATEUR")
+
+                        // =========================
+                        // EDIT + DELETE (ADMIN ONLY)
+                        // =========================
+                        .requestMatchers("/cautions/edit/**", "/cautions/delete/**")
                         .hasRole("ADMINISTRATEUR")
 
-                        // EVERYTHING ELSE
+                        // =========================
+                        // ADMIN MODULES
+                        // =========================
+                        .requestMatchers("/users/**", "/banques/**", "/fournisseurs/**", "/ordonnateurs/**")
+                        .hasRole("ADMINISTRATEUR")
+                        .requestMatchers("/cautions/admin/**")
+                        .hasRole("ADMINISTRATEUR")
+                        // DEFAULT
                         .anyRequest().authenticated()
                 )
 
+                // ==================================================
                 // LOGIN CONFIG
+                // ==================================================
                 .formLogin(form -> form
                         .loginPage("/login")
                         .usernameParameter("matricule")
@@ -69,7 +72,9 @@ public class SecurityConfig {
                         .permitAll()
                 )
 
+                // ==================================================
                 // LOGOUT CONFIG
+                // ==================================================
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
@@ -78,19 +83,29 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")
                 )
 
-                // USER DETAILS
+                // ==================================================
+                // USER DETAILS SERVICE
+                // ==================================================
                 .userDetailsService(userDetailsService);
 
         return http.build();
     }
 
+    // ======================================================
+    // PASSWORD ENCODER
+    // ======================================================
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // ======================================================
+    // AUTH MANAGER
+    // ======================================================
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config
+    ) throws Exception {
         return config.getAuthenticationManager();
     }
 }

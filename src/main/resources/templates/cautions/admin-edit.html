@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<div layout:fragment="content">
+
+    <div class="container mt-4">
+
+        <h3 class="mb-4"> Modifier Caution</h3>
+
+        <form th:action="@{/cautions/admin/update}"
+              method="post"
+              th:object="${caution}">
+
+            <!-- CODE INTERNE -->
+            <div class="mb-2">
+                <label>Code Interne</label>
+                <input type="text"
+                       class="form-control"
+                       th:value="*{codeInterne}"
+                       readonly>
+            </div>
+
+            <!-- DATE CAUTION -->
+            <div class="mb-2">
+                <label>Date Caution</label>
+
+                <div th:if="${caution.date != null}">
+                <span class="form-control bg-light"
+                      th:text="${#temporals.format(caution.date, 'yyyy-MM-dd')}">
+                </span>
+                </div>
+
+                <div th:if="${caution.date == null}">
+                    <input type="date"
+                           name="date"
+                           class="form-control form-control-sm">
+                </div>
+            </div>
+
+            <!-- BANQUE -->
+            <div class="mb-2">
+                <label>Banque</label>
+                <select class="form-control" th:field="*{banque}">
+                    <option th:each="b : ${banques}"
+                            th:value="${b}"
+                            th:text="${b.libelle}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- FOURNISSEUR -->
+            <div class="mb-2">
+                <label>Fournisseur</label>
+                <select class="form-control" th:field="*{fournisseur}">
+                    <option th:each="f : ${fournisseurs}"
+                            th:value="${f}"
+                            th:text="${f.libelle}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- ORDONNATEUR -->
+            <div class="mb-2">
+                <label>Ordonnateur</label>
+                <select class="form-control" th:field="*{ordonnateur}">
+                    <option th:each="o : ${ordonnateurs}"
+                            th:value="${o}"
+                            th:text="${o.libelle}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- REFERENCE -->
+            <div class="mb-2">
+                <label>Référence</label>
+                <input type="text"
+                       class="form-control"
+                       th:field="*{reference}">
+            </div>
+
+            <!-- MONTANT -->
+            <div class="mb-2">
+                <label>Montant</label>
+                <input type="number"
+                       step="0.01"
+                       class="form-control"
+                       th:field="*{montant}">
+            </div>
+
+            <!-- DATE MAIN LEVEE -->
+            <div class="mb-2">
+                <label>Date Main Levée</label>
+
+                <div th:if="${caution.dateMainLevee != null}">
+                <span class="form-control bg-light"
+                      th:text="${#temporals.format(caution.dateMainLevee, 'yyyy-MM-dd')}">
+                </span>
+                </div>
+
+                <div th:if="${caution.dateMainLevee == null}">
+                    <input type="date"
+                           name="dateMainLevee"
+                           class="form-control form-control-sm">
+                </div>
+            </div>
+
+            <!-- DATE RESTITUTION -->
+            <div class="mb-2">
+                <label>Date Restitution</label>
+
+                <div th:if="${caution.dateRestitution != null}">
+                <span class="form-control bg-light"
+                      th:text="${#temporals.format(caution.dateRestitution, 'yyyy-MM-dd')}">
+                </span>
+                </div>
+
+                <div th:if="${caution.dateRestitution == null}">
+                    <input type="date"
+                           name="dateRestitution"
+                           class="form-control form-control-sm">
+                </div>
+            </div>
+
+            <!-- ETAT -->
+            <div class="mb-2">
+                <label>État</label>
+                <select class="form-control" th:field="*{etat}">
+                    <option th:each="e : ${T(com.poste.gestion_caution.entity.EtatCaution).values()}"
+                            th:value="${e}"
+                            th:text="${e}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- REMARQUE -->
+            <div class="mb-2">
+                <label>Remarque</label>
+                <textarea class="form-control"
+                          th:field="*{remarque}">
+            </textarea>
+            </div>
+
+            <button class="btn btn-primary">
+                Sauvegarder
+            </button>
+
+            <a href="/cautions/gestion" class="btn btn-secondary">
+                Retour
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+</html>

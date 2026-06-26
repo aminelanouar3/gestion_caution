@@ -84,23 +84,23 @@
 <div class="sidebar">
 
     <div class="sidebar-header">
-        📁 Gestion des Cautions
+         Gestion des Cautions
     </div>
 
     <!-- 🟢 CAUTIONS (ALL ROLES) -->
     <div class="sidebar-section">Cautions</div>
 
     <a th:href="@{/cautions}">
-        🧾 Liste des Cautions
+         Liste des Cautions
     </a>
 
-    <!-- 🟡 GESTIONNAIRE + ADMIN -->
-    <a th:href="@{/gestion}"
+    <!-- 🟡 GESTION MODULE -->
+    <a th:href="@{/cautions/gestion}"
        sec:authorize="hasAnyRole('GESTIONNAIRE','ADMINISTRATEUR')">
-        ⚙️ Gestion des Cautions
+        Gestion des Cautions
     </a>
 
-    <!-- 🟡 GESTIONNAIRE + ADMIN -->
+    <!-- 🟡 CREATE -->
     <a th:href="@{/cautions/new}"
        sec:authorize="hasAnyRole('GESTIONNAIRE','ADMINISTRATEUR')">
         ➕ Nouvelle Caution
@@ -114,22 +114,22 @@
 
     <a th:href="@{/users}"
        sec:authorize="hasRole('ADMINISTRATEUR')">
-        👥 Utilisateurs
+         Utilisateurs
     </a>
 
     <a th:href="@{/banques}"
        sec:authorize="hasRole('ADMINISTRATEUR')">
-        🏦 Banques
+         Banques
     </a>
 
     <a th:href="@{/fournisseurs}"
        sec:authorize="hasRole('ADMINISTRATEUR')">
-        👤 Fournisseurs
+         Fournisseurs
     </a>
 
     <a th:href="@{/ordonnateurs}"
        sec:authorize="hasRole('ADMINISTRATEUR')">
-        🏢 Ordonnateurs
+         Ordonnateurs
     </a>
 
 </div>

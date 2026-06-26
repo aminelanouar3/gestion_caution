@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<div layout:fragment="content">
+
+    <h3 class="mb-3">Gestion des Cautions</h3>
+    <form method="get"
+          th:action="@{/cautions/gestion}"
+          class="mb-3">
+
+        <div class="row g-2">
+
+            <div class="col-md-3">
+                <input type="number"
+                       name="code"
+                       class="form-control"
+                       placeholder="Code caution">
+            </div>
+
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100">
+                    Search
+                </button>
+            </div>
+
+            <div class="col-md-2">
+                <a th:href="@{/cautions/gestion}"
+                   class="btn btn-secondary w-100">
+                    Reset
+                </a>
+            </div>
+
+        </div>
+
+    </form>
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <span th:text="${errorMessage}"></span>
+    </div>
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Référence</th>
+            <th>Banque</th>
+            <th>Fournisseur</th>
+            <th>Ordonnateur</th>
+            <th>Montant</th>
+            <th>État</th>
+            <th>Date Caution</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr th:each="c : ${cautions}">
+
+            <td th:text="${c.codeInterne}"></td>
+            <td th:text="${c.reference}"></td>
+
+            <td th:text="${c.banque.libelle}"></td>
+            <td th:text="${c.fournisseur.libelle}"></td>
+            <td th:text="${c.ordonnateur.libelle}"></td>
+
+            <td th:text="${c.montant}"></td>
+
+            <td>
+                <span class="badge bg-info" th:text="${c.etat}"></span>
+            </td>
+
+            <td th:text="${c.date}"></td>
+
+            <td>
+
+                <!-- GESTIONNAIRE + ADMIN: CHANGE STATE -->
+                <div sec:authorize="hasAnyRole('GESTIONNAIRE','ADMINISTRATEUR')"
+                     class="mb-2">
+
+                    <form th:action="@{'/cautions/' + ${c.codeInterne} + '/state'}"
+                          method="post"
+                          class="d-flex flex-column gap-2">
+
+                        <select name="state" class="form-select form-select-sm">
+
+                            <option value="MAIN_LEVEE">MAIN_LEVEE</option>
+                            <option value="RESTITUE">RESTITUE</option>
+                            <option value="SAISIE">SAISIE</option>
+
+                        </select>
+
+                        <div class="mb-1">
+
+                            <label>Date Main Levée</label>
+
+                            <div th:if="${c.dateMainLevee != null}">
+                                <span class="form-control bg-light"
+                                        th:text="${c.dateMainLevee}">
+                                </span>
+                            </div>
+
+                            <div th:if="${c.dateMainLevee == null}">
+                                <input type="date"
+                                       name="dateMainLevee"
+                                       class="form-control form-control-sm">
+                            </div>
+
+                        </div>
+
+                        <div class="mb-1">
+
+                            <label>Date Restitution</label>
+
+                            <div th:if="${c.dateRestitution != null}">
+                                <span class="form-control bg-light"
+                                th:text="${c.dateRestitution}">
+                                 </span>
+                            </div>
+
+                            <div th:if="${c.dateRestitution == null}">
+                                <input type="date"
+                                       name="dateRestitution"
+                                       class="form-control form-control-sm">
+                            </div>
+
+                        </div>
+
+                        <button class="btn btn-sm btn-primary">
+                            Valider
+                        </button>
+
+                    </form>
+
+                </div>
+
+                <!-- ADMIN ONLY: EDIT -->
+                <div class="d-flex gap-2">
+
+                    <!-- MODIFIER -->
+                    <a th:href="@{'/cautions/admin/edit/' + ${c.codeInterne}}"
+                       class="btn btn-sm btn-primary"
+                       sec:authorize="hasRole('ADMINISTRATEUR')">
+                        Modifier
+                    </a>
+
+                    <!-- SUPPRIMER -->
+                    <a th:href="@{'/cautions/delete/' + ${c.codeInterne}}"
+                       class="btn btn-sm btn-danger"
+                       sec:authorize="hasRole('ADMINISTRATEUR')"
+                       onclick="return confirm('Voulez-vous vraiment supprimer cette caution ?')">
+                        Supprimer
+                    </a>
+                </div>
+            </td>
+
+        </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+</html>

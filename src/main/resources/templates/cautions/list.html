@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<div layout:fragment="content">
+
+    <h4 class="mb-3">Liste des Cautions</h4>
+    <form method="get" th:action="@{/cautions}" class="mb-3">
+
+        <div class="row g-2">
+
+            <!-- CODE / REFERENCE -->
+            <div class="col-md-3">
+                <input type="text"
+                       name="reference"
+                       class="form-control"
+                       placeholder="Search Reference / Code">
+            </div>
+
+            <!-- DATE FROM -->
+            <div class="col-md-2">
+                <input type="date"
+                       name="dateFrom"
+                       class="form-control">
+            </div>
+
+            <!-- DATE TO -->
+            <div class="col-md-2">
+                <input type="date"
+                       name="dateTo"
+                       class="form-control">
+            </div>
+
+            <!-- ETAT FILTER -->
+            <div class="col-md-2">
+                <select name="etat" class="form-control">
+                    <option value="">Tous états</option>
+                    <option value="EN_COURS">EN_COURS</option>
+                    <option value="MAIN_LEVEE">MAIN_LEVEE</option>
+                    <option value="RESTITUE">RESTITUE</option>
+                    <option value="SAISIE">SAISIE</option>
+                </select>
+            </div>
+
+            <!-- BUTTON -->
+            <div class="col-md-3">
+                <button class="btn btn-primary w-100">
+                    Rechercher
+                </button>
+            </div>
+
+        </div>
+
+    </form>
+    <!-- TABLE -->
+    <table class="table table-bordered table-hover bg-white">
+
+        <thead class="table-dark">
+        <tr>
+            <th>Référence</th>
+            <th>Banque</th>
+            <th>Fournisseur</th>
+            <th>Ordonnateur</th>
+            <th>Montant</th>
+            <th>Date Caution</th>
+            <th>Main Levée</th>
+            <th>Restitution</th>
+            <th>État</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr th:each="c : ${cautions}">
+
+            <!-- BASIC INFO -->
+            <td th:text="${c.reference}"></td>
+            <td th:text="${c.banque.libelle}"></td>
+            <td th:text="${c.fournisseur.libelle}"></td>
+            <td th:text="${c.ordonnateur.libelle}"></td>
+            <td th:text="${c.montant}"></td>
+            <td th:text="${c.date}"></td>
+
+            <!-- DATES -->
+            <td th:text="${c.dateMainLevee != null ? c.dateMainLevee : '—'}"></td>
+            <td th:text="${c.dateRestitution != null ? c.dateRestitution : '—'}"></td>
+
+            <!-- STATE BADGE -->
+            <td>
+                <span class="badge"
+                      th:text="${c.etat}"
+                      th:classappend="${
+                        c.etat.name() == 'EN_COURS' ? ' bg-primary' :
+                        c.etat.name() == 'MAIN_LEVEE' ? ' bg-warning text-dark' :
+                        c.etat.name() == 'RESTITUE' ? ' bg-success' :
+                        ' bg-secondary'
+                      }">
+                </span>
+            </td>
+
+        </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+</html>
