@@ -49,6 +49,7 @@
             <th>Fournisseur</th>
             <th>Ordonnateur</th>
             <th>Montant</th>
+            <th>Observation</th>
             <th>État</th>
             <th>Date Caution</th>
             <th>Actions</th>
@@ -67,12 +68,13 @@
             <td th:text="${c.ordonnateur.libelle}"></td>
 
             <td th:text="${c.montant}"></td>
-
+            <td th:text="${c.remarque}"></td>
             <td>
                 <span class="badge bg-info" th:text="${c.etat}"></span>
             </td>
 
             <td th:text="${c.date}"></td>
+
 
             <td>
 
@@ -111,23 +113,22 @@
                         </div>
 
                         <div class="mb-1">
+                                <label>Date Restitution</label>
 
-                            <label>Date Restitution</label>
-
-                            <div th:if="${c.dateRestitution != null}">
-                                <span class="form-control bg-light"
-                                th:text="${c.dateRestitution}">
-                                 </span>
-                            </div>
-
-                            <div th:if="${c.dateRestitution == null}">
-                                <input type="date"
-                                       name="dateRestitution"
-                                       class="form-control form-control-sm">
-                            </div>
-
+                                <input type="text"
+                                       class="form-control form-control-sm bg-light"
+                                       th:value="${c.dateRestitution}"
+                                       readonly>
                         </div>
 
+                        <div class="mb-2">
+                            <label>Observation</label>
+                            <textarea
+                                    name="remarque"
+                                    class="form-control"
+                                    rows="3"
+                                    placeholder="Ajouter une observation..."></textarea>
+                        </div>
                         <button class="btn btn-sm btn-primary">
                             Valider
                         </button>

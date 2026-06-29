@@ -103,7 +103,7 @@
     <!-- 🟡 CREATE -->
     <a th:href="@{/cautions/new}"
        sec:authorize="hasAnyRole('GESTIONNAIRE','ADMINISTRATEUR')">
-        ➕ Nouvelle Caution
+         Nouvelle Caution
     </a>
 
     <!-- 🔴 ADMIN SECTION -->
@@ -137,19 +137,19 @@
 <!-- 🟨 TOP BAR -->
 <div class="topbar">
 
-    <div class="page-title" th:text="${title}">
-        Dashboard
+    <div class="page-title" >
     </div>
 
-    <span class="user-name"
-          th:text="${#authentication.principal.nomPrenom}">
-    </span>
-
     <div class="user-box d-flex align-items-center gap-2">
+        <form th:action="@{/home}" method="get">
+            <button type="submit" class="btn nav-bar-toggle-icon ">
+                Acceuil
+            </button>
+        </form>
         <!-- 🚪 Logout as BUTTON -->
         <form th:action="@{/logout}" method="post" style="margin:0;">
             <button type="submit" class="btn btn-sm btn-danger">
-                Logout
+                Déconnexion
             </button>
         </form>
 

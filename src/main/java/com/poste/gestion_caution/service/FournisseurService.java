@@ -3,6 +3,7 @@ package com.poste.gestion_caution.service;
 import com.poste.gestion_caution.entity.Banque;
 import com.poste.gestion_caution.entity.Fournisseur;
 import com.poste.gestion_caution.repository.FournisseurRepository;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Data
 public class FournisseurService {
 
     private final FournisseurRepository repo;

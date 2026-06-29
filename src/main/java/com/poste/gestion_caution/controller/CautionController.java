@@ -28,14 +28,14 @@ public class CautionController {
     // -----------------------
     @GetMapping
     public String list(
-            @RequestParam(required = false) String reference,
+            @RequestParam(required = false) Long code,
             @RequestParam(required = false) LocalDate dateFrom,
             @RequestParam(required = false) LocalDate dateTo,
             @RequestParam(required = false) EtatCaution etat,
             Model model) {
 
         model.addAttribute("cautions",
-                service.search(reference, dateFrom, dateTo, etat));
+                service.search(code, dateFrom, dateTo, etat));
 
         return "cautions/list";
     }
@@ -105,9 +105,10 @@ public class CautionController {
     public String changeState(@PathVariable Long id,
                               @RequestParam EtatCaution state,
                               @RequestParam(required = false) LocalDate dateMainLevee,
-                              @RequestParam(required = false) LocalDate dateRestitution) {
+                              @RequestParam(required = false) LocalDate dateRestitution,
+                              @RequestParam(required = false) String remarque) {
 
-        service.changeState(id, state, dateMainLevee, dateRestitution);
+        service.changeState(id, state, dateMainLevee, dateRestitution, remarque);
         return "redirect:/cautions/gestion";
     }
     @GetMapping("/gestion")

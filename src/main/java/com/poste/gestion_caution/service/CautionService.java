@@ -28,7 +28,7 @@ public class CautionService {
         return repo.findAll();
     }
 
-    public List<Caution> search(String reference,
+    public List<Caution> search(Long code,
                                 LocalDate dateFrom,
                                 LocalDate dateTo,
                                 EtatCaution etat) {
@@ -36,8 +36,8 @@ public class CautionService {
         return repo.findAll().stream()
 
                 // reference filter
-                .filter(c -> reference == null ||
-                        c.getReference().toLowerCase().contains(reference.toLowerCase()))
+                .filter(c -> code == null ||
+                        c.getCodeInterne().equals(code))
 
                 // etat filter
                 .filter(c -> etat == null || c.getEtat() == etat)
@@ -110,7 +110,8 @@ public class CautionService {
     public void changeState(Long id,
                             EtatCaution newState,
                             LocalDate dateMainLevee,
-                            LocalDate dateRestitution) {
+                            LocalDate dateRestitution,
+                            String remarque) {
 
         Caution c = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Caution not found"));
@@ -133,49 +134,63 @@ public class CautionService {
 
         // ✅ MAIN LEVEE RULE
         if (newState == EtatCaution.MAIN_LEVEE) {
+
             if (dateMainLevee == null) {
                 throw new InvalidStateTransitionException(
                         "Date Main Levée obligatoire"
                 );
             }
+
+            if (!dateMainLevee.isAfter(c.getDate())) {
+                throw new InvalidStateTransitionException(
+                        "La Date Main Levée doit être postérieure à la date de la caution."
+                );
+            }
+
             c.setDateMainLevee(dateMainLevee);
         }
 
         // ✅ RESTITUTION RULE
         if (newState == EtatCaution.RESTITUE) {
-            if (dateRestitution == null || c.getDateMainLevee() == null) {
+
+            if (c.getDateMainLevee() == null) {
                 throw new InvalidStateTransitionException(
-                        "Date restitution et date main levée obligatoires"
+                        "La Date Main Levée est obligatoire."
                 );
             }
+            if (dateRestitution == null) {
+                c.setDateRestitution(LocalDate.now());
+            }
+
             c.setDateRestitution(dateRestitution);
         }
-
         c.setEtat(newState);
-
+        if (remarque != null && !remarque.isBlank()) {
+            c.setRemarque(remarque.trim());
+        }
         repo.save(c);
     }
+    public long totalCautions() {
+        return repo.count();
+    }
 
-    // -----------------------
-    // RULE ENGINE
-    // -----------------------
-    private boolean isValidTransition(EtatCaution oldState, EtatCaution newState) {
+    public long totalEnCours() {
+        return repo.countByEtat(EtatCaution.EN_COURS);
+    }
 
-        return switch (oldState) {
+    public long totalMainLevee() {
+        return repo.countByEtat(EtatCaution.MAIN_LEVEE);
+    }
 
-            case EN_COURS ->
-                    newState == EtatCaution.MAIN_LEVEE
-                            || newState == EtatCaution.SAISIE;
+    public long totalRestitue() {
+        return repo.countByEtat(EtatCaution.RESTITUE);
+    }
 
-            case MAIN_LEVEE ->
-                    newState == EtatCaution.RESTITUE
-                            || newState == EtatCaution.SAISIE;
+    public Double montantTotal() {
+        return repo.getTotalMontant();
+    }
 
-            case RESTITUE ->
-                    newState == EtatCaution.SAISIE;
-
-            case SAISIE ->
-                    false;
-        };
+    public List<Caution> dernieresCautions() {
+        return repo.findTop5ByOrderByDateDesc();
     }
 }

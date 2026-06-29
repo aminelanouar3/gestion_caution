@@ -1,112 +1,113 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 
-<head>
-    <title>Home</title>
-
-    <style>
-        .welcome-box {
-            background: white;
-            border-radius: 8px;
-            padding: 25px;
-            border: 1px solid #e5e7eb;
-        }
-
-        .title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #111827;
-        }
-
-        .subtitle {
-            color: #6b7280;
-            font-size: 13px;
-        }
-
-        .quick-links {
-            margin-top: 20px;
-        }
-
-        .quick-links a {
-            display: block;
-            padding: 10px 14px;
-            margin-bottom: 8px;
-            background: #f9fafb;
-            border-radius: 6px;
-            text-decoration: none;
-            color: #111827;
-            border: 1px solid #e5e7eb;
-        }
-
-        .quick-links a:hover {
-            background: #eef2ff;
-        }
-
-        .badge-role {
-            font-size: 12px;
-            background: #e0e7ff;
-            color: #3730a3;
-            padding: 4px 8px;
-            border-radius: 6px;
-        }
-    </style>
-</head>
-
-<body>
-
 <div layout:fragment="content">
 
-    <div class="container">
+    <h2 class="mb-1">
+        Bienvenue,
+        <span th:text="${#authentication.principal.nomPrenom}"></span> 👋
+    </h2>
 
-        <div class="row justify-content-center" style="margin-top: 40px;">
+    <p class="text-muted">
+        Gestion des Cautions
+    </p>
 
-            <div class="col-md-8">
+    <hr>
 
-                <!-- 🟦 WELCOME BOX -->
-                <div class="welcome-box">
+    <!-- Statistics -->
+    <div class="row g-3 mb-4">
 
-                    <div class="title">
-                        Bienvenue dans le système de gestion des cautions
-                    </div>
-
-                    <div class="subtitle mt-1">
-                        Poste Tunisienne - Système interne de suivi des cautions bancaires
-                    </div>
-
-                    <div class="mt-2">
-                        Rôle :
-                        <span class="badge-role"
-                              th:text="${#authentication.authorities}">
-                        </span>
-                    </div>
-
-                    <!-- 🔗 QUICK ACCESS -->
-                    <div class="quick-links">
-
-                        <a th:href="@{/cautions}">
-                            Accéder aux Cautions
-                        </a>
-
-                        <a th:href="@{/banques}">
-                            Accéder aux Banques
-                        </a>
-
-                        <a th:href="@{/fournisseurs}">
-                             Accéder aux Fournisseurs
-                        </a>
-
-                        <a th:href="@{/ordonnateurs}">
-                            Accéder aux Ordonnateurs
-                        </a>
-
-                    </div>
-
+        <div class="col-md">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h6>Total</h6>
+                    <h3 th:text="${total}"></h3>
                 </div>
-
             </div>
+        </div>
+
+        <div class="col-md">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h6>En Cours</h6>
+                    <h3 th:text="${enCours}"></h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h6>Main Levée</h6>
+                    <h3 th:text="${mainLevee}"></h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h6>Restituées</h6>
+                    <h3 th:text="${restitue}"></h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h6>Montant Total</h6>
+                    <h3 th:text="${#numbers.formatDecimal(montantTotal,1,2)} + ' DT'"></h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Recent cautions -->
+    <div class="card shadow-sm">
+
+        <div class="card-header">
+            Dernières Cautions
+        </div>
+
+        <div class="card-body p-0">
+
+            <table class="table table-hover mb-0">
+
+                <thead class="table-light">
+                <tr>
+                    <th>Code</th>
+                    <th>Banque</th>
+                    <th>Fournisseur</th>
+                    <th>État</th>
+                    <th>Date</th>
+                    <th>Montant</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr th:each="c : ${dernieres}">
+                    <td th:text="${c.codeInterne}"></td>
+                    <td th:text="${c.banque.libelle}"></td>
+                    <td th:text="${c.fournisseur.libelle}"></td>
+                    <td th:text="${c.etat}"></td>
+                    <td th:text="${#temporals.format(c.date,'dd/MM/yyyy')}"></td>
+                    <td th:text="${c.montant + ' DT'}"></td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(dernieres)}">
+                    <td colspan="6" class="text-center">
+                        Aucune caution disponible.
+                    </td>
+                </tr>
+
+                </tbody>
+
+            </table>
 
         </div>
 
@@ -114,5 +115,4 @@
 
 </div>
 
-</body>
 </html>
