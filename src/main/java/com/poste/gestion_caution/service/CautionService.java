@@ -28,26 +28,13 @@ public class CautionService {
         return repo.findAll();
     }
 
-    public List<Caution> search(Long code,
-                                LocalDate dateFrom,
-                                LocalDate dateTo,
-                                EtatCaution etat) {
-
+    public List<Caution> search(String code, String reference, EtatCaution etat) {
         return repo.findAll().stream()
-
-                // reference filter
-                .filter(c -> code == null ||
-                        c.getCodeInterne().equals(code))
-
-                // etat filter
+                .filter(c -> code == null || code.isBlank()
+                        || c.getCodeInterne().toString().contains(code))
+                .filter(c -> reference == null || reference.isBlank()
+                        || c.getReference().toLowerCase().contains(reference.toLowerCase()))
                 .filter(c -> etat == null || c.getEtat() == etat)
-
-                // date from
-                .filter(c -> dateFrom == null || !c.getDate().isBefore(dateFrom))
-
-                // date to
-                .filter(c -> dateTo == null || !c.getDate().isAfter(dateTo))
-
                 .toList();
     }
 
@@ -117,6 +104,9 @@ public class CautionService {
                 .orElseThrow(() -> new RuntimeException("Caution not found"));
 
         EtatCaution oldState = c.getEtat();
+        if(oldState==newState){
+            return;
+        }
 
         // ❌ BLOCK FINAL STATE
         if (oldState == EtatCaution.SAISIE) {
@@ -169,6 +159,25 @@ public class CautionService {
             c.setRemarque(remarque.trim());
         }
         repo.save(c);
+    }
+    private void validateMainLevee(Caution c, LocalDate dateMainLevee) {
+        if (dateMainLevee == null) {
+            throw new InvalidStateTransitionException("Date Main Levée obligatoire");
+        }
+
+        if (!dateMainLevee.isAfter(c.getDate())) {
+            throw new InvalidStateTransitionException(
+                    "La Date Main Levée doit être postérieure à la date de la caution."
+            );
+        }
+    }
+
+    private void validateRestitution(Caution c) {
+        if (c.getDateMainLevee() == null) {
+            throw new InvalidStateTransitionException(
+                    "La Date Main Levée est obligatoire."
+            );
+        }
     }
     public long totalCautions() {
         return repo.count();

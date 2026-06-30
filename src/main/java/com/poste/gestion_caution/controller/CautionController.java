@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 @RequestMapping("/cautions")
@@ -27,15 +28,15 @@ public class CautionController {
     // LIST
     // -----------------------
     @GetMapping
-    public String list(
-            @RequestParam(required = false) Long code,
-            @RequestParam(required = false) LocalDate dateFrom,
-            @RequestParam(required = false) LocalDate dateTo,
+    public String listCautions(
+            @RequestParam(required = false) String code,
+            @RequestParam(required = false) String reference,
             @RequestParam(required = false) EtatCaution etat,
             Model model) {
 
-        model.addAttribute("cautions",
-                service.search(code, dateFrom, dateTo, etat));
+        List<Caution> cautions = service.search(code, reference, etat);
+
+        model.addAttribute("cautions", cautions);
 
         return "cautions/list";
     }
@@ -60,11 +61,10 @@ public class CautionController {
                        @RequestParam Integer banqueId,
                        @RequestParam Integer fournisseurId,
                        @RequestParam Integer ordonnateurId) {
-
         service.save(c, banqueId, fournisseurId, ordonnateurId);
-
         return "redirect:/cautions";
     }
+
     // -----------------------
     // EDIT FORM
     // -----------------------
@@ -78,6 +78,7 @@ public class CautionController {
 
         return "cautions/admin-edit";
     }
+
     @PostMapping("/admin/update")
     public String adminUpdate(@ModelAttribute Caution c,
                               @RequestParam Integer banqueId,
@@ -101,6 +102,7 @@ public class CautionController {
     // -----------------------
     // CHANGE STATE
     // -----------------------
+
     @PostMapping("/{id}/state")
     public String changeState(@PathVariable Long id,
                               @RequestParam EtatCaution state,
@@ -112,12 +114,14 @@ public class CautionController {
         return "redirect:/cautions/gestion";
     }
     @GetMapping("/gestion")
-    public String gestion(@RequestParam(required = false) Long code,
+    public String gestion(@RequestParam(required = false) String code,
+                          @RequestParam(required = false) String reference,
+                          @RequestParam(required = false) EtatCaution etat,
                           Model model) {
 
-        model.addAttribute("cautions",
-                service.searchByCode(code));
+        List<Caution> cautions = service.search(code, reference, etat);
 
+        model.addAttribute("cautions", cautions);
         return "cautions/gestion";
     }
 

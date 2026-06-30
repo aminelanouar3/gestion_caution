@@ -7,51 +7,38 @@
 
     <h4 class="mb-3">Liste des Cautions</h4>
     <form method="get" th:action="@{/cautions}" class="mb-3">
-
-        <div class="row g-2">
-
-            <!-- CODE / REFERENCE -->
+        <div class="row g-2 align-items-end">
+            <!-- CODE INTERNE -->
             <div class="col-md-3">
-                <input type="number"
+                <input type="text"
                        name="code"
                        class="form-control"
-                       placeholder="Recherche par Code">
+                       placeholder="Code interne">
             </div>
-
-            <!-- DATE FROM -->
-            <div class="col-md-2">
-                <input type="date"
-                       name="dateFrom"
-                       class="form-control">
+            <!-- REFERENCE -->
+            <div class="col-md-3">
+                <input type="text"
+                       name="reference"
+                       class="form-control"
+                       placeholder="Référence">
             </div>
-
-            <!-- DATE TO -->
-            <div class="col-md-2">
-                <input type="date"
-                       name="dateTo"
-                       class="form-control">
-            </div>
-
-            <!-- ETAT FILTER -->
-            <div class="col-md-2">
+            <!-- ETAT -->
+            <div class="col-md-3">
                 <select name="etat" class="form-control">
-                    <option value="">Tous états</option>
+                    <option value="">Tous les états</option>
                     <option value="EN_COURS">EN_COURS</option>
                     <option value="MAIN_LEVEE">MAIN_LEVEE</option>
                     <option value="RESTITUE">RESTITUE</option>
                     <option value="SAISIE">SAISIE</option>
                 </select>
             </div>
-
-            <!-- BUTTON -->
-            <div class="col-md-3">
+            <!-- SEARCH BUTTON -->
+            <div class="col-md-2">
                 <button class="btn btn-primary w-100">
                     Rechercher
                 </button>
             </div>
-
         </div>
-
     </form>
     <!-- TABLE -->
     <table class="table table-bordered table-hover bg-white">

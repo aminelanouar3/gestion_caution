@@ -7,38 +7,45 @@
 <div layout:fragment="content">
 
     <h3 class="mb-3">Gestion des Cautions</h3>
-    <form method="get"
-          th:action="@{/cautions/gestion}"
-          class="mb-3">
-
-        <div class="row g-2">
-
+    <form method="get" th:action="@{/cautions/gestion}" class="mb-3">
+        <div class="row g-2 align-items-end">
+            <!-- CODE INTERNE -->
             <div class="col-md-3">
-                <input type="number"
+                <input type="text"
                        name="code"
                        class="form-control"
-                       placeholder="Code caution">
+                       placeholder="Code interne">
             </div>
-
+            <!-- REFERENCE -->
+            <div class="col-md-3">
+                <input type="text"
+                       name="reference"
+                       class="form-control"
+                       placeholder="Référence">
+            </div>
+            <!-- ETAT -->
+            <div class="col-md-3">
+                <select name="etat" class="form-control">
+                    <option value="">Tous les états</option>
+                    <option value="EN_COURS">EN_COURS</option>
+                    <option value="MAIN_LEVEE">MAIN_LEVEE</option>
+                    <option value="RESTITUE">RESTITUE</option>
+                    <option value="SAISIE">SAISIE</option>
+                </select>
+            </div>
+            <!-- SEARCH BUTTON -->
             <div class="col-md-2">
                 <button class="btn btn-primary w-100">
-                    Search
+                    Rechercher
                 </button>
             </div>
-
-            <div class="col-md-2">
-                <a th:href="@{/cautions/gestion}"
-                   class="btn btn-secondary w-100">
-                    Reset
-                </a>
-            </div>
-
         </div>
-
     </form>
+
     <div th:if="${errorMessage}" class="alert alert-danger">
         <span th:text="${errorMessage}"></span>
     </div>
+
     <table class="table table-bordered table-hover">
 
         <thead class="table-dark">
