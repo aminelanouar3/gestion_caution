@@ -80,13 +80,21 @@ public class CautionService {
         c.setFournisseur(f);
         c.setOrdonnateur(o);
         if (c.getEtat()==EtatCaution.EN_COURS){
+            if(c.getDate()==null){
+                throw new InvalidEditTransitionException("Date Caution obligatoire",c.getCodeInterne());
+            }
             c.setDateMainLevee(null);
             c.setDateRestitution(null);
         }
         if(c.getEtat()==EtatCaution.MAIN_LEVEE){
             c.setDateRestitution(null);
+            if(c.getDateMainLevee()==null){
+                throw new InvalidEditTransitionException("Date Main Levée obligatoire",c.getCodeInterne());
+            }
+            if(c.getDate().isAfter(c.getDateMainLevee())){
+                throw new InvalidEditTransitionException("La Date Main Levée doit être postérieure à la date de la caution.",c.getCodeInterne());
+            }
         }
-
         return repo.save(c);
     }
 
