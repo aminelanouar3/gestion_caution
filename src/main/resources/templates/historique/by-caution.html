@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Historique Caution</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+
+<body class="container mt-4">
+
+<h3>Historique Caution #<span th:text="${codeInterne}"></span></h3>
+
+<a href="/historique" class="btn btn-secondary mb-3">Retour</a>
+
+<table class="table table-bordered table-striped">
+
+    <thead class="table-dark">
+    <tr>
+        <th>Action</th>
+        <th>Utilisateur</th>
+        <th>IP</th>
+        <th>Date</th>
+        <th>Snapshot</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="h : ${historiques}">
+        <td th:text="${h.act}"></td>
+        <td th:text="${h.utilisateurMatricule}"></td>
+        <td th:text="${h.machineIp}"></td>
+        <td th:text="${h.dateAction}"></td>
+
+        <td>
+            <details>
+                <summary>Voir snapshot</summary>
+                <pre th:text="${h.snapshot}"></pre>
+            </details>
+        </td>
+    </tr>
+    </tbody>
+
+</table>
+
+</body>
+</html>

@@ -21,7 +21,7 @@ public class CautionService {
     private final BanqueRepository banqueRepo;
     private final FournisseurRepository fournisseurRepo;
     private final OrdonnateurRepository ordonnateurRepo;
-
+    private final HistoriqueService historiqueService;
     // -----------------------
     // LIST
     // -----------------------
@@ -59,10 +59,19 @@ public class CautionService {
         c.setBanque(b);
         c.setFournisseur(f);
         c.setOrdonnateur(o);
-
         c.setEtat(EtatCaution.EN_COURS);
 
-        return repo.save(c);
+        Caution saved = repo.save(c);
+
+        // 🔥 HISTORY (ONLY ONE LINE)
+        historiqueService.save(
+                "CREATION",
+                saved.getCodeInterne(),
+                null,
+                saved
+        );
+
+        return saved;
     }
 
     // -----------------------
@@ -72,6 +81,10 @@ public class CautionService {
                           Integer banqueId,
                           Integer fournisseurId,
                           Integer ordonnateurId) {
+
+        Caution old = repo.findById(c.getCodeInterne())
+                .orElseThrow(() -> new RuntimeException("Caution not found"));
+
         Banque b = banqueRepo.findById(banqueId).orElseThrow();
         Fournisseur f = fournisseurRepo.findById(fournisseurId).orElseThrow();
         Ordonnateur o = ordonnateurRepo.findById(ordonnateurId).orElseThrow();
@@ -79,33 +92,28 @@ public class CautionService {
         c.setBanque(b);
         c.setFournisseur(f);
         c.setOrdonnateur(o);
-        if (c.getEtat()==EtatCaution.EN_COURS){
-            if(c.getDate()==null){
-                throw new InvalidEditTransitionException("Date Caution obligatoire",c.getCodeInterne());
-            }
-            c.setDateMainLevee(null);
-            c.setDateRestitution(null);
-        }
-        if(c.getEtat()==EtatCaution.MAIN_LEVEE){
-            c.setDateRestitution(null);
-            if(c.getDateMainLevee()==null){
-                throw new InvalidEditTransitionException("Date Main Levée obligatoire",c.getCodeInterne());
-            }
-            if(c.getDate().isAfter(c.getDateMainLevee())){
-                throw new InvalidEditTransitionException("La Date Main Levée doit être postérieure à la date de la caution.",c.getCodeInterne());
-            }
-        }
-        return repo.save(c);
+
+        Caution saved = repo.save(c);
+
+        // 🔥 HISTORY
+        historiqueService.save(
+                "MODIFICATION",
+                saved.getCodeInterne(),
+                old,
+                saved
+        );
+
+        return saved;
     }
 
     // -----------------------
     // DELETE
     // -----------------------
     public void delete(Long id) {
-        Caution c = repo.findById(id)
+        Caution old = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Caution introuvable"));
 
-        repo.delete(c);
+        repo.delete(old);
     }
 
     // -----------------------
@@ -120,62 +128,52 @@ public class CautionService {
         Caution c = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Caution not found"));
 
-        EtatCaution oldState = c.getEtat();
-        if(oldState==newState){
-            return;
+        Caution old = repo.findById(id).orElseThrow();
+
+        if (c.getEtat() == newState) return;
+
+        if (c.getEtat() == EtatCaution.SAISIE) {
+            throw new RuntimeException("Caution clôturée");
         }
 
-        // ❌ BLOCK FINAL STATE
-        if (oldState == EtatCaution.SAISIE) {
-            throw new InvalidStateTransitionException(
-                    "Impossible de modifier une caution déjà clôturée (SAISIE)"
-            );
+        if (c.getEtat() == EtatCaution.EN_COURS && newState == EtatCaution.RESTITUE) {
+            throw new RuntimeException("Passe par MAIN_LEVEE");
         }
 
-        // ❌ INVALID TRANSITIONS
-        if (oldState == EtatCaution.EN_COURS && newState == EtatCaution.RESTITUE) {
-            throw new InvalidStateTransitionException(
-                    "Transition invalide : passer par MAIN_LEVEE avant RESTITUE"
-            );
-        }
-
-        // ✅ MAIN LEVEE RULE
         if (newState == EtatCaution.MAIN_LEVEE) {
 
-            if (dateMainLevee == null) {
-                throw new InvalidStateTransitionException(
-                        "Date Main Levée obligatoire"
-                );
-            }
+            if (dateMainLevee == null)
+                throw new RuntimeException("Date Main Levée obligatoire");
 
-            if (!dateMainLevee.isAfter(c.getDate())) {
-                throw new InvalidStateTransitionException(
-                        "La Date Main Levée doit être postérieure à la date de la caution."
-                );
-            }
+            if (!dateMainLevee.isAfter(c.getDate()))
+                throw new RuntimeException("Date invalide");
 
             c.setDateMainLevee(dateMainLevee);
         }
 
-        // ✅ RESTITUTION RULE
         if (newState == EtatCaution.RESTITUE) {
 
-            if (c.getDateMainLevee() == null) {
-                throw new InvalidStateTransitionException(
-                        "La Date Main Levée est obligatoire."
-                );
-            }
-            if (dateRestitution == null) {
-                c.setDateRestitution(LocalDate.now());
-            }
-        }
-        c.setEtat(newState);
-        if (remarque != null && !remarque.isBlank()) {
-            c.setRemarque(remarque.trim());
-        }
-        repo.save(c);
-    }
+            if (c.getDateMainLevee() == null)
+                throw new RuntimeException("Main levée manquante");
 
+            if (dateRestitution == null)
+                c.setDateRestitution(LocalDate.now());
+        }
+
+        c.setEtat(newState);
+
+        if (remarque != null) c.setRemarque(remarque);
+
+        Caution saved = repo.save(c);
+
+        // 🔥 HISTORY
+        historiqueService.save(
+                "MODIFICATION",
+                saved.getCodeInterne(),
+                old,
+                saved
+        );
+    }
     public long totalCautions() {
         return repo.count();
     }

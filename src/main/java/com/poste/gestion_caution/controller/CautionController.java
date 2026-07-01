@@ -6,6 +6,7 @@ import com.poste.gestion_caution.repository.BanqueRepository;
 import com.poste.gestion_caution.repository.FournisseurRepository;
 import com.poste.gestion_caution.repository.OrdonnateurRepository;
 import com.poste.gestion_caution.service.CautionService;
+import com.poste.gestion_caution.service.HistoriqueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +25,7 @@ public class CautionController {
     private final FournisseurRepository fournisseurRepo;
     private final OrdonnateurRepository ordonnateurRepo;
     private final CautionService service;
+
 
     // -----------------------
     // LIST

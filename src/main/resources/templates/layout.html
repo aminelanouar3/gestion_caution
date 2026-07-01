@@ -141,6 +141,11 @@
     </div>
 
     <div class="user-box d-flex align-items-center gap-2">
+        <form th:action="@{/historique}" method="get">
+            <button type="submit" class="btn nav-bar-toggle-icon ">
+                Historique
+            </button>
+        </form>
         <form th:action="@{/home}" method="get">
             <button type="submit" class="btn nav-bar-toggle-icon ">
                 Acceuil

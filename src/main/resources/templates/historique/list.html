@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<body>
+
+<div layout:fragment="content">
+
+    <h3>Historique Global</h3>
+
+    <table class="table table-bordered table-striped mt-3">
+
+        <thead class="table-dark">
+        <tr>
+            <th>Action</th>
+            <th>Code Interne</th>
+            <th>Utilisateur</th>
+            <th>IP</th>
+            <th>Date</th>
+            <th>Snapshot</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="h : ${historiques}">
+            <td th:text="${h.act}"></td>
+            <td th:text="${h.codeInterne}"></td>
+            <td th:text="${h.utilisateurMatricule}"></td>
+            <td th:text="${h.machineIp}"></td>
+            <td th:text="${#temporals.format(h.dateAction,'dd/MM/yyyy HH:mm')}"></td>
+
+            <td>
+                <details>
+                    <summary>Voir</summary>
+                    <pre th:text="${h.snapshot}"></pre>
+                </details>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+
+</div>
+
+</body>
+</html>
