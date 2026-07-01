@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -60,8 +61,13 @@ public class CautionController {
     public String save(@ModelAttribute Caution c,
                        @RequestParam Integer banqueId,
                        @RequestParam Integer fournisseurId,
-                       @RequestParam Integer ordonnateurId) {
-        service.save(c, banqueId, fournisseurId, ordonnateurId);
+                       @RequestParam Integer ordonnateurId,
+                       RedirectAttributes redirectAttributes) {
+        Caution saved=service.save(c, banqueId, fournisseurId, ordonnateurId);
+        redirectAttributes.addFlashAttribute(
+                "successMessage",
+                "Nouvelle caution créée. Code interne : " + saved.getCodeInterne()
+        );
         return "redirect:/cautions";
     }
 
@@ -85,7 +91,7 @@ public class CautionController {
                               @RequestParam Integer fournisseurId,
                               @RequestParam Integer ordonnateurId) {
 
-        service.save(c, banqueId, fournisseurId, ordonnateurId);
+        service.update(c, banqueId, fournisseurId, ordonnateurId);
 
         return "redirect:/cautions/gestion";
     }

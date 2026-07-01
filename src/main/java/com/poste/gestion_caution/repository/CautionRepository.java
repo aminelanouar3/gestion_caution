@@ -17,4 +17,5 @@ public interface CautionRepository extends JpaRepository<Caution, Long> {
     Double getTotalMontant();
 
     List<Caution> findTop5ByOrderByDateDesc();
+    List<Caution> findAllByOrderByCodeInterneDesc();
 }

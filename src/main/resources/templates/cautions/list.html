@@ -6,6 +6,18 @@
 <div layout:fragment="content">
 
     <h4 class="mb-3">Liste des Cautions</h4>
+    <div th:if="${successMessage}"
+         class="alert alert-success alert-dismissible fade show"
+         role="alert">
+
+        <span th:text="${successMessage}"></span>
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="alert">
+        </button>
+
+    </div>
     <form method="get" th:action="@{/cautions}" class="mb-3">
         <div class="row g-2 align-items-end">
             <!-- CODE INTERNE -->

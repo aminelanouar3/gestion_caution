@@ -1,6 +1,7 @@
 package com.poste.gestion_caution.service;
 
 import com.poste.gestion_caution.entity.*;
+import com.poste.gestion_caution.exception.InvalidEditTransitionException;
 import com.poste.gestion_caution.repository.BanqueRepository;
 import com.poste.gestion_caution.repository.CautionRepository;
 import com.poste.gestion_caution.repository.FournisseurRepository;
@@ -25,11 +26,11 @@ public class CautionService {
     // LIST
     // -----------------------
     public List<Caution> findAll() {
-        return repo.findAll();
+        return repo.findAllByOrderByCodeInterneDesc();
     }
 
     public List<Caution> search(String code, String reference, EtatCaution etat) {
-        return repo.findAll().stream()
+        return findAll().stream()
                 .filter(c -> code == null || code.isBlank()
                         || c.getCodeInterne().toString().contains(code))
                 .filter(c -> reference == null || reference.isBlank()
@@ -42,17 +43,7 @@ public class CautionService {
         return repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Caution not found"));
     }
-    public List<Caution> searchByCode(Long code) {
 
-        if (code == null) {
-            return repo.findAll();
-        }
-
-        return repo.findAll().stream()
-                .filter(c -> c.getCodeInterne() != null
-                        && c.getCodeInterne().equals(code))
-                .toList();
-    }
     // -----------------------
     // CREATE
     // -----------------------
@@ -77,7 +68,25 @@ public class CautionService {
     // -----------------------
     // UPDATE BASIC INFO
     // -----------------------
-    public Caution update(Caution c) {
+    public Caution update(Caution c,
+                          Integer banqueId,
+                          Integer fournisseurId,
+                          Integer ordonnateurId) {
+        Banque b = banqueRepo.findById(banqueId).orElseThrow();
+        Fournisseur f = fournisseurRepo.findById(fournisseurId).orElseThrow();
+        Ordonnateur o = ordonnateurRepo.findById(ordonnateurId).orElseThrow();
+
+        c.setBanque(b);
+        c.setFournisseur(f);
+        c.setOrdonnateur(o);
+        if (c.getEtat()==EtatCaution.EN_COURS){
+            c.setDateMainLevee(null);
+            c.setDateRestitution(null);
+        }
+        if(c.getEtat()==EtatCaution.MAIN_LEVEE){
+            c.setDateRestitution(null);
+        }
+
         return repo.save(c);
     }
 
@@ -151,8 +160,6 @@ public class CautionService {
             if (dateRestitution == null) {
                 c.setDateRestitution(LocalDate.now());
             }
-
-            c.setDateRestitution(dateRestitution);
         }
         c.setEtat(newState);
         if (remarque != null && !remarque.isBlank()) {
@@ -160,25 +167,7 @@ public class CautionService {
         }
         repo.save(c);
     }
-    private void validateMainLevee(Caution c, LocalDate dateMainLevee) {
-        if (dateMainLevee == null) {
-            throw new InvalidStateTransitionException("Date Main Levée obligatoire");
-        }
 
-        if (!dateMainLevee.isAfter(c.getDate())) {
-            throw new InvalidStateTransitionException(
-                    "La Date Main Levée doit être postérieure à la date de la caution."
-            );
-        }
-    }
-
-    private void validateRestitution(Caution c) {
-        if (c.getDateMainLevee() == null) {
-            throw new InvalidStateTransitionException(
-                    "La Date Main Levée est obligatoire."
-            );
-        }
-    }
     public long totalCautions() {
         return repo.count();
     }
