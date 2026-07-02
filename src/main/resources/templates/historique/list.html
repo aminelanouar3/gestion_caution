@@ -8,33 +8,107 @@
 <div layout:fragment="content">
 
     <h3>Historique Global</h3>
+    <form method="get" class="row g-2 mb-3">
 
+        <div class="col-md-2">
+            <select class="form-select" name="action">
+
+                <option value="">-- Action --</option>
+
+                <option value="CREATION"
+                        th:selected="${action == 'CREATION'}">
+                    CREATION
+                </option>
+
+                <option value="MODIFICATION"
+                        th:selected="${action == 'MODIFICATION'}">
+                    MODIFICATION
+                </option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <input class="form-control"
+                   name="user"
+                   placeholder="Utilisateur"
+                   th:value="${user}">
+        </div>
+
+        <div class="col-md-2">
+            <input class="form-control"
+                   name="codeInterne"
+                   placeholder="Code Caution"
+                   th:value="${codeInterne}">
+        </div>
+
+        <div class="col-md-2">
+            <input type="date"
+                   class="form-control"
+                   name="date"
+                   th:value="${date}">
+        </div>
+
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100">Filtrer</button>
+        </div>
+
+        <div class="col-md-2">
+            <a href="/historique" class="btn btn-secondary w-100">Reset</a>
+        </div>
+
+    </form>
     <table class="table table-bordered table-striped mt-3">
 
         <thead class="table-dark">
         <tr>
             <th>Action</th>
-            <th>Code Interne</th>
+            <th>Caution</th>
             <th>Utilisateur</th>
             <th>IP</th>
-            <th>Date</th>
-            <th>Snapshot</th>
+            <th>Date Action</th>
+
+            <th>Référence</th>
+            <th>Montant</th>
+            <th>Banque</th>
+            <th>Fournisseur</th>
+            <th>Ordonnateur</th>
+            <th>Date Caution</th>
+            <th>État</th>
+            <th>Date Main Levée</th>
+            <th>Date Restitution</th>
+            <th>Observation</th>
         </tr>
         </thead>
 
         <tbody>
         <tr th:each="h : ${historiques}">
+
             <td th:text="${h.act}"></td>
             <td th:text="${h.codeInterne}"></td>
             <td th:text="${h.utilisateurMatricule}"></td>
             <td th:text="${h.machineIp}"></td>
             <td th:text="${#temporals.format(h.dateAction,'dd/MM/yyyy HH:mm')}"></td>
 
-            <td>
-                <details>
-                    <summary>Voir</summary>
-                    <pre th:text="${h.snapshot}"></pre>
-                </details>
+            <!-- SNAPSHOT FIELDS -->
+            <td th:text="${h.snapshotObject?.reference}"></td>
+            <td th:text="${h.snapshotObject?.montant != null ? h.snapshotObject.montant + ' DT' : ''}"></td>
+            <td th:text="${h.snapshotObject?.banque}"></td>
+            <td th:text="${h.snapshotObject?.fournisseur}"></td>
+            <td th:text="${h.snapshotObject?.ordonnateur}"></td>
+            <td th:text="${h.snapshotObject?.date != null ? #temporals.format(h.snapshotObject.date,'dd/MM/yyyy') : ''}"></td>
+            <td th:text="${h.snapshotObject?.etat}"></td>
+            <td th:text="${h.snapshotObject?.dateMainLevee != null
+        ? #temporals.format(h.snapshotObject.dateMainLevee,'dd/MM/yyyy')
+        : ''}"></td>
+            <td th:text="${h.snapshotObject?.dateRestitution != null
+        ? #temporals.format(h.snapshotObject.dateRestitution,'dd/MM/yyyy')
+        : ''}"></td>
+            <td th:text="${h.snapshotObject?.remarque}"></td>
+        </tr>
+
+        <tr th:if="${#lists.isEmpty(historiques)}">
+            <td colspan="11" class="text-center">
+                Aucun historique disponible
             </td>
         </tr>
         </tbody>

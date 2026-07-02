@@ -32,4 +32,6 @@ public class Historique {
     @Lob
     @Column(columnDefinition = "TEXT")
     private String snapshot; // JSON from SnapshotService
+    @jakarta.persistence.Transient
+    private com.poste.gestion_caution.dto.CautionSnapshot snapshotObject;
 }
